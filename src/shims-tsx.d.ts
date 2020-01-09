@@ -1,16 +1,3 @@
-// import Vue, { VNode } from 'vue'
-//
-// declare global {
-//   namespace JSX {
-//     // tslint:disable no-empty-interface
-//     interface Element extends VNode {}
-//     // tslint:disable no-empty-interface
-//     interface ElementClass extends Vue {}
-//     interface IntrinsicElements {
-//       [elem: string]: any
-//     }
-//   }
-// }
 import Vue, { VNode } from 'vue'
 import { ComponentRenderProxy } from '@vue/composition-api'
 
@@ -28,6 +15,29 @@ declare global {
     }
   }
 }
+
+
+// import Vue from 'vue';
+declare module '*.vue' {
+  import Vue from 'vue';
+  export default Vue;
+}
+
+
+// import Vue, { VNode } from 'vue'
+//
+// declare global {
+//   namespace JSX {
+//     // tslint:disable no-empty-interface
+//     interface Element extends VNode {}
+//     // tslint:disable no-empty-interface
+//     interface ElementClass extends Vue {}
+//     interface IntrinsicElements {
+//       [elem: string]: any
+//     }
+//   }
+// }
+
 
 // declare module '*.bmp' {
 //   const src: string;
@@ -53,12 +63,14 @@ declare global {
 //   const src: string;
 //   export default src;
 // }
-//
+
+
 // declare module '*.webp' {
 //   const src: string;
 //   export default src;
 // }
-//
+
+
 // declare module '*.module.css' {
 //   const classes: { readonly [key: string]: string };
 //   export default classes;

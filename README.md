@@ -1,12 +1,14 @@
 # TSX @vue/composition-api example [![Build Status](https://travis-ci.org/daggerok/tsx-vue-composition-api-example.svg?branch=master)](https://travis-ci.org/daggerok/tsx-vue-composition-api-example)
 Awesome typed functional Vue components!
 
+## TSX
+
 1. install software:
    ```bash
-   npm i -E core-js axios @vue/composition-api
-   npm i -ED babel-preset-vca-jsx pm2 cross-env
+   npm i -E core-js @vue/composition-api
+   npm i -ED babel-preset-vca-jsx
    ```
-1. update _babel.config.js_ file:
+1. update `babel.config.js` file:
    ```js
    module.exports = {
      presets: [
@@ -16,12 +18,11 @@ Awesome typed functional Vue components!
      ],
    };
    ```
-1. remove all _shims-*.d.ts_ files:
-1. create _shims-tsx.d.ts_ file with next content:
+1. remove all `src/shims-*.d.ts` files...
+1. create `src/shims-tsx.d.ts` file with next content:
    ```typescript
    import Vue, { VNode } from 'vue'
    import { ComponentRenderProxy } from '@vue/composition-api'
-   
    declare global {
      namespace JSX {
        // tslint:disable no-empty-interface
@@ -36,11 +37,14 @@ Awesome typed functional Vue components!
        }
      }
    }
+   declare module '*.vue' {
+     import Vue from 'vue';
+     export default Vue;
+   }
    ```
-1. migrate _HelloWorld.vue_ component to -> _HelloWorld.tsx_ component:
-   ```tsx
+1. migrate `src/components/HelloWorld.vue` component to -> `src/components/HelloWorld.tsx` component:
+   ```typescript jsx
    import { createComponent } from '@vue/composition-api';
-   
    export default createComponent({
      name: 'HelloWorld',
      props: {
@@ -58,11 +62,10 @@ Awesome typed functional Vue components!
      },
    })
    ```
-1. migrate _App.vue_ component to -> _App.tsx_ component:
-   ```tsx
+1. migrate `src/App.vue` component to -> `src/App.tsx` component:
+   ```typescript jsx
    import { createComponent } from '@vue/composition-api';
    import HelloWorld from '@/components/HelloWorld';
-   
    export default createComponent({
      name: 'App',
      setup() {
@@ -74,6 +77,73 @@ Awesome typed functional Vue components!
      },
    });
    ```
-1. run npm i ; npm run serve
 
-(;
+## TSX VueRouter integration fixes...
+
+1. transform views uses in routes:
+   * `src/views/Home.tsx` -> typescript `src/views/Home.vue`:
+     ```vue
+     <template>
+       <div>
+         <h1>HelloWorld</h1>
+         <HelloWorld msg="nonono" />
+       </div>
+     </template>
+     <script lang="ts">
+       import { createComponent } from '@vue/composition-api';
+       import HelloWorld from '@/components/HelloWorld';
+       export default createComponent({
+         name: 'Home',
+         components: {
+           HelloWorld,
+         },
+       });
+     </script>
+     ```
+   * `src/views/About.tsx` -> typescript `src/views/About.vue`:
+     ```vue
+     <template>
+       <div>
+         <h1>This is an about page</h1>
+         <HelloWorld msg='yay!'/>
+       </div>
+     </template>
+     <script lang="ts">
+       import { createComponent } from '@vue/composition-api';
+       import HelloWorld from '@/components/HelloWorld';
+       export default createComponent({
+         name: 'About',
+         components: {
+           HelloWorld,
+         },
+       });
+     </script>
+     ```
+1. fix typed router setup `src/router/index.ts`:
+   ```typescript
+   import Vue from 'vue';
+   import VueRouter, { RouterOptions } from 'vue-router';
+   import { RouteConfig } from 'vue-router/types/router';
+   Vue.use(VueRouter);
+   function loadView(view: string) {
+     return () => import(/* webpackChunkName: "view-[request]" */ `@/views/${view}.vue`)
+   }
+   const routes: RouteConfig[] = [
+     {
+       path: '/',
+       name: 'home',
+       component: loadView('Home'),
+     },
+     {
+       path: '/about',
+       name: 'about',
+       component: loadView('About'),
+     },
+   ];
+   const options: RouterOptions = {
+     base: process.env.BASE_URL,
+     mode: 'history',
+     routes,
+   };
+   export default new VueRouter(options);
+   ```

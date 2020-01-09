@@ -6,11 +6,18 @@
     "jsx": "preserve",
     "importHelpers": true,
     "moduleResolution": "node",
+    "experimentalDecorators": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,
     "baseUrl": ".",
+    // "files": [
+    //   "src/shims-tsx.d.ts"
+    // ],
     "types": [
+      // "vue",
+      // "node",
+      // "webfontloader",
       "webpack-env"
     ],
     "paths": {
