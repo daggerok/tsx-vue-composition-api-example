@@ -8,13 +8,13 @@ git:
   depth: false
 language: node
 node_js: lts/*
-python: 3.7
+python: 3.8
 os: linux
 addons:
   apt:
     packages:
       - curl
-      - python3-pip
+      - httpie
 install: true
 before_install:
   - |
@@ -24,10 +24,6 @@ before_install:
     fi
     source ${HOME}/.local/daggerok/bash-functions/master/main.bash ;
     stop_any 80 3000 5000 8080 5432
-  - |
-    export PATH=$HOME/.local/bin:$PATH
-    pip3 install --user --upgrade pip setuptools
-    pip install --user --upgrade httpie
 jobs:
   include:
 
@@ -60,7 +56,6 @@ jobs:
       local-dir: $TRAVIS_BUILD_DIR/dist
       on:
         branch: master
-
 cache:
   npm: true
   packages: true
